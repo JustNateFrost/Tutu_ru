@@ -41,7 +41,7 @@ def test_no_sign(driver):
     sign_page.enter()
     sign_page.output_mail()
     sign_page.check_error()
-    error_message = sign_page.check()
+    error_message = sign_page.check_error()
 
     with allure.step("Проверить полученное сообщение с ожидаемым"):
         assert error_message == "Без адреса электронной почты никак."
@@ -50,19 +50,17 @@ def test_no_sign(driver):
 @allure.epic("UI")
 @allure.story("Positive")
 @allure.severity("critical")
-@allure.title("Поиск Ж/д билетов по пути Сургут-Тюмень на завтрашнюю дату")
-@allure.description("Ввод значений в поля Откуда, Куда, выбор даты, получение пути следования найденных билетов")
+@allure.title("Поиск Ж/д билетов по пути Москва — Санкт-Петербург на завтрашнюю дату")
+@allure.description("Заполнение полей Откуда, Куда, Когда, получение пути следования найденных билетов")
 def test_cities(driver):
     ticket_page = TicketPage(driver)
     ticket_page.open()
     ticket_page.date()
-    ticket_page.input_from()
-    ticket_page.input_to()
-    ticket_page.check_cities()
-    way = ticket_page.check_cities
+    ticket_page.input()
+    way = ticket_page.check_cities()
 
     with allure.step("Проверить полученное сообщение с ожидаемым"):
-        assert way == "Сургут — Тюмень"
+        assert way == "Москва — Санкт-Петербург"
 
 
 @allure.epic("UI")
@@ -73,8 +71,8 @@ def test_cities(driver):
 def test_filter_seats(driver):
     seat_page = SeatPage(driver)
     seat_page.open()
-    seat_page.check_number()
-    amount = seat_page.check_number
+    amount = seat_page.check_number()
+    print(amount)
 
     with allure.step("Проверить полученный текст с ожидаемым"):
         assert amount == "Плацкарт, 2 места"

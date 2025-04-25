@@ -15,10 +15,19 @@ class SeatPage:
     @allure.step("Открыть страницу с результатами поиска билетов и выбрать поезд")
     def open(self) -> None:
         """
-        Эта функция открывает страницу с результатами поиска билетов на 05.05.2025 по пути Сургут-Тюмень и выбирает поезд 377Г
+        Эта функция открывает страницу с результатами поиска билетов на 05.05.2025 по пути Сургут-Тюмень
+         и выбирает поезд 377Г
         """
+        self.driver.maximize_window()
         self.driver.get('https://www.tutu.ru/poezda/rasp_d.php?nnst1=2030600&nnst2=2030100&date=05.05.2025&travelers=1')
-        self.driver.find_element(By.XPATH, '//*[@id="__next"]/div/div[3]/div/div[3]/div[1]/div/div/div/div[2]/div/div[2]/div[2]/div[2]/div').click()
+        first_button = WebDriverWait(self.driver, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.CSS_SELECTOR, 'button[data-ti="main-tariff-content-default"]')
+            )
+        )[0]
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", first_button)
+        first_button.click()
+
 
     @allure.step("Увеличить количество пассажиров и получить результат изменения")
     def check_number(self) -> str:
@@ -26,12 +35,15 @@ class SeatPage:
         Эта функция увеличивает количество взрослых пассажиров от 1 до 2, дожидается изменений на странице
         Возвращает текст полученного результата
         """
-        self.driver.find_element(By.XPATH, '//*[@id="root"]/div/div[4]/div[2]/div/div[1]/div[2]/div[3]/button').click()
         self.wait.until(
-            EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div[4]/div[4]/div[2]/div/div[1]/div/div[1]'))
+            EC.presence_of_element_located((By.XPATH, '(//*[@data-ti="order-counter-last-button"])[1]'))
+        )
+        self.driver.find_element(By.XPATH, '(//*[@data-ti="order-counter-last-button"])[1]').click()
+        self.wait.until(
+            EC.presence_of_element_located((By.XPATH, '(//*[@data-ti="title"])[4]'))
         )
         number = self.driver.find_element(
-            By.XPATH, '//*[@id="root"]/div/div[4]/div[4]/div[2]/div/div[1]/div/div[1]/span[1]').text
+            By.XPATH, '(//*[@data-ti="title"])[4]').text
         return number
 
     @allure.step("Выбрать вагон, место и дождаться появления стоимости билета")
@@ -40,13 +52,18 @@ class SeatPage:
         Эта функция нажимает на вагон 2, на место 20 на схеме вагона и получает стоимость билета
         Возвращает стоимость
         """
-        self.driver.find_element(By.XPATH, '//*[@id="root"]/div/div[4]/div[5]/div[2]/div/div[1]/div/div/div/div/div/div/div[1]/div[4]/div/div/div/button').click()
-        self.driver.find_element(By.XPATH, '//*[@id="root"]/div/div[4]/div[5]/div[2]/div/div[1]/div/div/div/div/div/div/div[2]/div/div[4]/div/div/div/div/div/div[21]/div').click()
         self.wait.until(
-            EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div[4]/div[6]/div/div/div/div/div/div[2]/div[2]/span/span'))
+            EC.presence_of_element_located((By.XPATH, '(//button[@data-ti="order-button"])[6]'))
+        )
+        order = self.driver.find_element(By.XPATH, '(//button[@data-ti="order-button"])[6]')
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", order)
+        order.click()
+        self.driver.find_element(By.CSS_SELECTOR, '[data-ti-seat="20"]').click()
+        self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, '[data-ti="next_step_price"]'))
         )
         price_before = self.driver.find_element(
-            By.XPATH, '//*[@id="root"]/div/div[4]/div[6]/div/div/div/div/div/div[2]/div[2]/span/span').text
+            By.CSS_SELECTOR, '[data-ti="next_step_price"]').text
         return price_before
 
     @allure.step("Отключить чекбокс с услугой и дождаться пересчёта стоимости билета")
@@ -55,10 +72,10 @@ class SeatPage:
         Эта функция отключает чекбокс с предоставлением белья и получает новую стоимость билета
         Возвращает пересчитанную стоимость
         """
-        self.driver.find_element(By.XPATH, '//*[@id="root"]/div/div[4]/div[5]/div[2]/div/div[1]/div/div/div/div/div/div/div[3]/label/div[1]/input').click()
+        self.driver.find_element(By.CSS_SELECTOR, '[data-ti="laundry-checkbox"]').click()
         self.wait.until(
-            EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div[4]/div[6]/div/div/div/div/div/div[2]/div[2]/span/span'))
+            EC.presence_of_element_located((By.CSS_SELECTOR, '[data-ti="next_step_price"]'))
         )
         price_after = self.driver.find_element(
-            By.XPATH, '//*[@id="root"]/div/div[4]/div[6]/div/div/div/div/div/div[2]/div[2]/span/span').text
+            By.CSS_SELECTOR, '[data-ti="next_step_price"]').text
         return price_after
