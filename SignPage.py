@@ -64,7 +64,6 @@ class SignPage:
             By.XPATH, '//span[text()="Введите одноразовый код для быстрой регистрации, отправленный на вашу почту."]').text
         return mail
 
-    @allure.step("Дождаться и получить сообщение об ошибке")
     def error_without_mail(self) -> str:
         """
         Эта функция дожидается сообщения об ошибке
@@ -75,10 +74,8 @@ class SignPage:
         )
         error_w_m = self.driver.find_element(
             By.CSS_SELECTOR, '[data-ti-error="email"]').text
-        print(error_w_m)
         return error_w_m
 
-    @allure.step("Дождаться и получить сообщение об ошибке")
     def error_without_checkbox(self) -> str:
         """
         Эта функция дожидается сообщения об ошибке
@@ -89,5 +86,4 @@ class SignPage:
         )
         error_w_c = self.driver.find_element(
             By.CSS_SELECTOR, '[data-ti-error="agreement"]').text
-        print(error_w_c)
         return error_w_c

@@ -51,7 +51,7 @@ def test_list_of_prices_with_an_invalid_body():
 def test_list_of_trains_for_the_station_on_the_date():
     base_url = "https://train-gateway.tutu.ru"
     my_params = {
-        'datetime': '2025-05-05T12%3A00%3A00%2B05%3A00'
+        'datetime': '2025-05-05T12:00:00+05:00'
         }
     with allure.step("api. Выполнить GET-запрос"):
         resp = requests.get(base_url+'/api/station/2030600/timetable?', headers=my_headers, params=my_params)
@@ -68,7 +68,7 @@ def test_list_of_trains_for_the_station_on_the_date():
 def test_list_of_trains_for_the_station_on_the_invalid_date():
     base_url = "https://train-gateway.tutu.ru"
     my_params = {
-        'datetime': '2025-02-31T09%3A07%3A31%2B05%3A00'
+        'datetime': '2025-02-31T12:00:00+05:00'
         }
     with allure.step("api. Выполнить GET-запрос"):
         resp = requests.get(base_url+'/api/station/2030600/timetable?', headers=my_headers, params=my_params)
@@ -87,7 +87,7 @@ def test_list_of_trains_for_the_station_on_the_invalid_date():
 def test_list_of_reviews_for_the_train():
     base_url = "https://www.tutu.ru"
     my_params = {
-        'filter[train_number]': '377%D0%93',
+        'filter[train_number]': '377Г',
         'page[number]': '1',
         'page[size]': '5'
         }
@@ -108,7 +108,7 @@ def test_list_of_reviews_for_the_train():
 def test_list_of_reviews_for_the_train_without_page():
     base_url = "https://www.tutu.ru"
     my_params = {
-        "filter[train_number]": "377%D0%93",
+        "filter[train_number]": "377Г",
         "page[number]": "0",
         "page[size]": "0"
         }

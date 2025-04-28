@@ -3,7 +3,7 @@ import pytest
 from selenium import webdriver
 from SignPage import SignPage
 from TicketPage import TicketPage
-from SeatPage import SeatPage
+from SearchPage import SearchPage
 
 
 @pytest.fixture
@@ -43,7 +43,8 @@ def test_no_sign(driver):
     sign_page.checkbox()
     sign_page.sign()
     sign_page.error_without_mail()
-    error_message = sign_page.error_without_mail
+    with allure.step("Дождаться и получить сообщение об ошибке"):
+        error_message = sign_page.error_without_mail()
 
     with allure.step("Сравнить полученное сообщение с ожидаемым"):
         assert error_message == "Без адреса электронной почты никак."
@@ -61,7 +62,8 @@ def test_no_checkbox(driver):
     sign_page.input_mail()
     sign_page.sign()
     sign_page.error_without_checkbox()
-    error_message = sign_page.error_without_checkbox
+    with allure.step("Дождаться и получить сообщение об ошибке"):
+        error_message = sign_page.error_without_checkbox()
 
     with allure.step("Сравнить полученное сообщение с ожидаемым"):
         assert error_message == "Необходимо ваше согласие на обработку данных."
@@ -89,10 +91,10 @@ def test_cities(driver):
 @allure.title("Изменение даты в информации для поиска билета")
 @allure.description("Выбор другой даты для искомого билета")
 def test_date_change(driver):
-    seat_page = SeatPage(driver)
-    seat_page.open()
-    chosen_date = seat_page.open
-    seat_page.change_date()
-    new_date = seat_page.change_date
+    search_page = SearchPage(driver)
+    search_page.open()
+    chosen_date = search_page.open
+    search_page.change_date()
+    new_date = search_page.change_date
     with allure.step("Сравнить информацию для поиска билета"):
         assert chosen_date != new_date
